@@ -1,30 +1,24 @@
 import { useEffect, useState } from "react";
 import api from "./api/api";
+import Layout from "./components/Layout";
+import HeroSection from "./components/HeroSection";
+import EmergencyActions from "./components/EmergencyActions";
 
 function App() {
-  const [status, setStatus] = useState("checking");
-  const [error, setError] = useState(null);
+  const [backendStatus, setBackendStatus] = useState("checking");
 
   useEffect(() => {
     api
       .get("/health")
-      .then((res) => {
-        setStatus(res.data.status);
-      })
-      .catch((err) => {
-        setStatus("unreachable");
-        setError(err.message);
-      });
+      .then(() => setBackendStatus("ok"))
+      .catch(() => setBackendStatus("error"));
   }, []);
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>SentinelAI</h1>
-      <p>
-        Backend status: <strong>{status}</strong>
-      </p>
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
-    </div>
+    <Layout backendStatus={backendStatus}>
+      <HeroSection />
+      <EmergencyActions />
+    </Layout>
   );
 }
 
